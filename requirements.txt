@@ -1,0 +1,53 @@
+# Dependências do pipeline de transcrição (faster-whisper + CUDA).
+# Capturado de pip freeze em 2026-06-19, ao mover o projeto de OneDrive p/ C:\fabrica.
+# Python 3.12. Recriar com:
+#   C:\Users\eliez\AppData\Local\Programs\Python\Python312\python.exe -m venv .venv
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt
+# Obs.: o cache do modelo Whisper fica em %USERPROFILE%\.cache\huggingface (não é reinstalado).
+# cuDNN fixado em 9.10.2.21 (versão contra a qual o CTranslate2 4.7.1 foi compilado:
+#   CUDA 12.8.1 + cuDNN 9.10.2). O pip freeze original trouxe 9.22.0.52, novo demais.
+annotated-doc==0.0.4
+anyio==4.13.0
+av==17.0.1
+certifi==2026.4.22
+click==8.3.3
+colorama==0.4.6
+ctranslate2==4.7.1
+faster-whisper==1.2.1
+filelock==3.29.0
+flatbuffers==25.12.19
+fsspec==2026.4.0
+h11==0.16.0
+hf-xet==1.5.0
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.14.0
+idna==3.13
+markdown-it-py==4.2.0
+mdurl==0.1.2
+numpy==2.4.4
+nvidia-cublas-cu12==12.9.2.10
+nvidia-cuda-nvrtc-cu12==12.9.86
+nvidia-cudnn-cu12==9.10.2.21
+onnxruntime==1.26.0
+packaging==26.2
+protobuf==7.34.1
+Pygments==2.20.0
+PyYAML==6.0.3
+rich==15.0.0
+setuptools==82.0.1
+shellingham==1.5.4
+tokenizers==0.23.1
+tqdm==4.67.3
+typer==0.25.1
+typing_extensions==4.15.0
+
+# Ditado por voz ao vivo (ditar.py): captura de mic + atalho global + bandeja.
+cffi==2.0.0
+keyboard==0.13.5
+pillow==12.2.0
+pycparser==3.0
+pyperclip==1.11.0
+pystray==0.19.5
+six==1.17.0
+sounddevice==0.5.5

@@ -1,0 +1,26 @@
+# Ambiente virtual e caches do Python
+.venv/
+__pycache__/
+*.pyc
+
+# Pastas de trabalho com audios/transcricoes PESSOAIS — NUNCA publicar.
+# Padrao NN-nome: 00-inbox, 02-reference, 04-outputs, 05-arquivo, etc.
+[0-9][0-9]-*/
+
+# Rede de seguranca: este projeto GERA .md/.srt a partir de audio, e gravacoes
+# nunca devem ser versionadas. So o README.md vai pro repo (re-incluido abaixo).
+*.ogg
+*.opus
+*.mp3
+*.m4a
+*.wav
+*.flac
+*.aac
+*.wma
+*.srt
+*.md
+!README.md
+# Para adicionar outra doc .md no futuro, use: git add -f NOME.md
+
+# Config local do Claude Code
+.claude/
