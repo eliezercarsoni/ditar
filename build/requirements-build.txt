@@ -1,0 +1,5 @@
+# Dependências SÓ de build (não vão no runtime). Instalar no mesmo venv:
+#   .venv\Scripts\python.exe -m pip install -r build\requirements-build.txt
+# Empacota o Ditar/Transcrever em onedir — ver build\ditar.spec e
+# governance/_specs/R1-tem-exe/design.md.
+pyinstaller>=6.10

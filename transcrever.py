@@ -30,19 +30,29 @@ AUDIO_EXTENSIONS = {
 
 
 def _add_cuda_dlls_to_path() -> None:
-    """Garante que as DLLs do cuBLAS/cuDNN/nvrtc instaladas via pip estejam visiveis."""
-    try:
-        import nvidia  # noqa: F401
-    except ImportError:
-        return
-    base = Path(sys.prefix) / "Lib" / "site-packages" / "nvidia"
-    if not base.exists():
-        return
-    candidates = [
-        base / "cublas" / "bin",
-        base / "cudnn" / "bin",
-        base / "cuda_nvrtc" / "bin",
-    ]
+    """Garante que as DLLs do cuBLAS/cuDNN/nvrtc estejam visiveis (venv ou bundle congelado)."""
+    if getattr(sys, "frozen", False):
+        # PyInstaller onedir: as DLLs CUDA sao empacotadas em _MEIPASS\nvidia\<sub>\bin
+        # (mesmo layout do venv). Ver governance/_specs/R1-tem-exe/design.md.
+        base = Path(getattr(sys, "_MEIPASS", sys.prefix)) / "nvidia"
+        candidates = [
+            base / "cublas" / "bin",
+            base / "cudnn" / "bin",
+            base / "cuda_nvrtc" / "bin",
+        ]
+    else:
+        try:
+            import nvidia  # noqa: F401
+        except ImportError:
+            return
+        base = Path(sys.prefix) / "Lib" / "site-packages" / "nvidia"
+        if not base.exists():
+            return
+        candidates = [
+            base / "cublas" / "bin",
+            base / "cudnn" / "bin",
+            base / "cuda_nvrtc" / "bin",
+        ]
     extra = os.pathsep.join(str(p) for p in candidates if p.exists())
     if extra:
         os.environ["PATH"] = extra + os.pathsep + os.environ.get("PATH", "")
@@ -58,6 +68,23 @@ def _add_cuda_dlls_to_path() -> None:
 _add_cuda_dlls_to_path()
 
 from faster_whisper import WhisperModel  # noqa: E402
+
+
+def hard_exit(code: int = 0) -> None:
+    """Encerra apos o trabalho pulando o cleanup do interpretador (flush antes).
+
+    faster-whisper/CTranslate2 podem crashar (0xC0000409) na limpeza do contexto CUDA no
+    Windows, *depois* que o trabalho ja terminou. os._exit() pula o cleanup do Python e
+    cobre o caso comum (modelo em cache → saida limpa). Resta um fastfail NAO-deterministico
+    so quando o modelo e baixado na MESMA execucao curta (cosmetico, pos-trabalho — nao ha
+    fix barato no proprio processo). Ver governance/_specs/R1-tem-exe/tasks.md (issues).
+    """
+    try:
+        sys.stdout.flush()
+        sys.stderr.flush()
+    except Exception:
+        pass
+    os._exit(code)
 
 
 def format_srt_timestamp(seconds: float) -> str:
@@ -291,13 +318,8 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    # faster-whisper/CTranslate2 crasham no teardown da GPU no Windows
-    # (0xC0000409 / STATUS_STACK_BUFFER_OVERRUN, issue SYSTRAN/faster-whisper#1293):
-    # o processo morre durante a limpeza do contexto CUDA, *depois* que os
-    # arquivos .srt/.md ja foram gravados. Encerramos antes desse cleanup para
-    # devolver exit code 0 limpo. As saidas usam context managers (ja fechadas);
-    # so garantimos o flush do stdout/stderr. Caminhos de erro usam sys.exit()
-    # (SystemExit propaga e preserva o codigo de saida, sem chegar aqui).
-    sys.stdout.flush()
-    sys.stderr.flush()
-    os._exit(0)
+    # Encerra via TerminateProcess (ver hard_exit): evita o crash 0xC0000409 do
+    # teardown CUDA no Windows (issue SYSTRAN/faster-whisper#1293), *depois* que os
+    # .srt/.md ja foram gravados. Caminhos de erro usam sys.exit() antes de carregar a
+    # GPU (SystemExit propaga e preserva o codigo de saida, sem chegar aqui).
+    hard_exit(0)

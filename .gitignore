@@ -24,3 +24,15 @@ __pycache__/
 
 # Config local do Claude Code
 .claude/
+
+# Governanca do projeto (versionada) — excecao ao "*.md" acima
+!governance/
+!governance/**/*.md
+
+# Artefatos de build do PyInstaller (bundle ~2GB) — nunca versionar.
+# build\ditar.spec e build\requirements-build.txt SAO versionados (nao casam com as regras acima).
+build/dist/
+build/work/
+build/installer-output/
+build/delta-output/
+build/manifests/
