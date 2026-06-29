@@ -19,6 +19,8 @@ DEFAULTS: dict = {
     "mode": "toggle",            # "toggle" | "hold" (hold chega na fatia 2)
     "hotkey": "ctrl+alt+d",      # ctrl+alt+space colidia com o atalho global do Claude Desktop
     "sound": True,               # som suave ao gravar/parar
+    "model": "large-v3-turbo",   # modelo faster-whisper (troca exige reiniciar o Ditar)
+    "language": "pt",            # "pt" | "en" | "auto" (auto = detectar; aplica ao vivo)
     "onboarded": False,          # tela de boas-vindas (privacidade) ja foi mostrada?
 }
 

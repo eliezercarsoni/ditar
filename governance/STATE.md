@@ -36,8 +36,10 @@ alwaysApply: true
   - ✅ **Escada de fallback de injeção** (US-5.1): clipboard → SendInput Unicode; cobre o caso comum
     "clipboard ocupado por outro app" (antes sumia). UIA (3º degrau) adiado. `ditar.py:_inject` +
     `_inject_sendinput`. Verificado: round-trip Unicode (acentos PT) + escalonamento na exceção.
-  - ⬜ Code signing (Azure Trusted Signing) · ⬜ US-2.3 (modelo/idioma) · ⬜ US-3.3 (áudio+poda) ·
-    ⬜ auto-mute música ao ditar.
+  - ✅ **US-2.3 modelo/idioma na config**: dropdowns na janela de Configurações; idioma aplica ao
+    vivo (re-lido por gravação), modelo exige reiniciar. `config.py` (model/language) + `settings.py`
+    + resolução no `ditar.py:main` (arg CLI sobrepõe; `firstrun.ensure_model` baixa o escolhido).
+  - ⬜ Code signing (Azure Trusted Signing) · ⬜ US-3.3 (áudio+poda) · ⬜ auto-mute música ao ditar.
 - **Build/release:** `pyinstaller build/ditar.spec` → ISCC `installer.iss` (full) → `make_delta.py <ver> <ant>`
   → `gh release create` **+ anexar o `Ditar-Setup-<ver>.exe` à release** (senão usuário novo trava).
   Versão única em `version.py` (sincronizar `installer.iss`). Rollback: reinstalar release anterior.

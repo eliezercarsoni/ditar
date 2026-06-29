@@ -166,7 +166,7 @@ Esse é o coração da proposta de valor.
 | **R1 — "Tem .exe"** | Instalador funcional, sem Python | É1 + US-2.1 | ✅ feito |
 | **R2 — "Ditado estilo Wispr"** | Mic + som suave + HUD + modos hold/toggle + config | É6 + US-2.3 (parcial) + US-5.2 | ✅ feito |
 | **R3 — "Parece app + se mantém"** | Histórico SQLite + onboarding + auto-update (delta) | US-2.2 + É3 + É4 | ✅ feito (1.3.6) |
-| **R4 — "Polido / distribuição"** | ✅ full installer publicado (1.3.6) · ✅ fonte público sincronizado · ✅ fallback de injeção (US-5.1, UIA adiado) · ⬜ code signing, US-2.3/US-3.3, auto-mute | US-5.1 + US-5.3 + resto | 🟡 em andamento |
+| **R4 — "Polido / distribuição"** | ✅ full installer (1.3.6) · ✅ fonte público · ✅ fallback de injeção (US-5.1) · ✅ US-2.3 modelo/idioma · ⬜ code signing, US-3.3, auto-mute | US-5.1 + US-5.3 + resto | 🟡 em andamento |
 
 Ordem operacional e horizontes em [`roadmap.md`](roadmap.md).
 

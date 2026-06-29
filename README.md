@@ -27,8 +27,9 @@ Um ícone fica na **bandeja do sistema**. Atalho padrão: **`CTRL+ALT+D`** (conf
 - O texto é colado via clipboard (robusto para acentuação PT) e o clipboard anterior é restaurado;
   se o clipboard estiver ocupado por outro app, o Ditar digita o texto direto (SendInput) — sem perder o ditado.
 
-**Configurações** (menu da bandeja → *Configurações*): microfone, som on/off, modo (segurar/toggle)
-e atalho. Mic e som valem na hora; modo e atalho aplicam em segundos, **sem reiniciar**.
+**Configurações** (menu da bandeja → *Configurações*): microfone, **modelo de voz**, **idioma**,
+som on/off, modo (segurar/toggle) e atalho. Mic, som e idioma valem na hora; modo e atalho aplicam
+em segundos; **trocar o modelo exige reiniciar o Ditar** (e baixa o novo modelo na 1ª vez).
 
 > Para digitar dentro de apps abertos **como administrador**, o Ditar também precisa rodar como
 > admin (limitação do hook de teclado do Windows). Em apps normais, funciona sem elevação.

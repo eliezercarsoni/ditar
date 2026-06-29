@@ -210,6 +210,8 @@ class Ditador:
             cfg = config.load()
             self.mic_device = cfg.get("mic_device")
             self.sound = bool(cfg.get("sound", True))
+            lang_raw = cfg.get("language", "pt")  # idioma aplica ao vivo (modelo exige reiniciar)
+            self.language = None if str(lang_raw).lower() == "auto" else lang_raw
         except Exception:
             pass
         self._frames = []
@@ -464,8 +466,10 @@ def parse_args() -> argparse.Namespace:
         default="ctrl+alt+d",
         help="atalho global p/ ligar/desligar (default: ctrl+alt+d; config.json tem prioridade)",
     )
-    p.add_argument("--model", default="large-v3-turbo", help="modelo (default: large-v3-turbo)")
-    p.add_argument("--language", default="pt", help="idioma (default: pt; 'auto' p/ detectar)")
+    p.add_argument("--model", default=None,
+                   help="modelo (sobrepoe o config; default config ou large-v3-turbo)")
+    p.add_argument("--language", default=None,
+                   help="idioma (sobrepoe o config; 'auto' p/ detectar; default config ou pt)")
     p.add_argument("--device", default="cuda", choices=["cuda", "cpu", "auto"])
     p.add_argument(
         "--compute-type",
@@ -556,15 +560,18 @@ def main() -> None:
         print("[ditar] ja esta aberto (outra instancia em execucao). Saindo.")
         return
 
-    language = None if args.language.lower() == "auto" else args.language
+    # modelo/idioma: arg explicito sobrepoe; senao vem do config (janela de Configuracoes).
+    model_name = args.model or cfg.get("model") or "large-v3-turbo"
+    lang_raw = args.language or cfg.get("language") or "pt"
+    language = None if str(lang_raw).lower() == "auto" else lang_raw
     compute_type = args.compute_type or (
         "int8_float16" if args.device == "cuda" else "int8"
     )
 
     # 1o uso (modelo ainda nao baixado): mostra splash de progresso em vez de "travar".
-    firstrun.ensure_model(args.model)
+    firstrun.ensure_model(model_name)
 
-    model = load_model(args.model, args.device, compute_type)
+    model = load_model(model_name, args.device, compute_type)
 
     if args.check:
         # mini smoke-test: transcreve 0.5s de silencio so para exercitar o caminho
@@ -586,7 +593,7 @@ def main() -> None:
 
     ditador = Ditador(model, language=language, use_tray=use_tray,
                       sound=bool(cfg.get("sound", True)), mic_device=cfg.get("mic_device"),
-                      hotkey=hotkey, hud_ctl=the_hud, model_name=args.model)
+                      hotkey=hotkey, hud_ctl=the_hud, model_name=model_name)
 
     def _apply_activation(hk: str, md: str) -> str:
         """(Re)registra o atalho conforme o modo. Pode ser chamado ao vivo."""
