@@ -67,6 +67,7 @@ alwaysApply: true
 - Trim de DLLs cuDNN (`cudnn_adv` 269 MB, `nvrtc.alt` 86 MB) — só se o tamanho apertar (design §5).
 - Modularizar `src/` em camadas (DDD) — **gatilho:** só se config + histórico crescerem (tailoring §2).
 - Code signing (Azure Trusted Signing) — **gatilho:** R4 / quando o SmartScreen virar incômodo.
+  Análise de gatilho + elegibilidade em [ADR-0005](adr/0005-code-signing-trusted-signing-gatilho.md).
 - Empacotar engine CPU-only como build alternativo — **gatilho:** demanda de usuários sem GPU NVIDIA.
 - **3º degrau da injeção (UI Automation)** — **gatilho:** caso real onde clipboard E SendInput
   falhem (ex.: controle custom sem entrada de teclado). Não vence o UIPI de app em admin e exigiria
