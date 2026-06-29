@@ -23,9 +23,11 @@ Para sair: menu do icone na bandeja -> Sair, ou Ctrl+C no console.
 from __future__ import annotations
 
 import argparse
+import ctypes
 import sys
 import threading
 import time
+from ctypes import wintypes
 from pathlib import Path
 
 # Reusa a injecao das DLLs do cuBLAS/cuDNN/nvrtc do transcrever.py (importar o
@@ -86,6 +88,89 @@ def _foreground_app() -> str:
         return buf.value or ""
     except Exception:
         return ""
+
+
+# ---------------------------------------------------------------------------
+# Injecao de texto no app em foco — escada de robustez (US-5.1):
+#   1) clipboard + Ctrl+V  -> instantaneo e perfeito p/ acentos PT
+#   2) SendInput Unicode   -> digita os caracteres direto, sem depender do clipboard
+#      (cobre o caso comum de "clipboard ocupado por outro app", que antes sumia)
+# UI Automation (3o degrau do plano) fica adiada: exigiria dependencia nova
+# (comtypes/uiautomation) e nao vence o UIPI de apps em admin — ver STATE.md.
+# ---------------------------------------------------------------------------
+_ULONG_PTR = ctypes.c_size_t  # ULONG_PTR (pointer-sized); bundle e x64-only
+
+
+class _MOUSEINPUT(ctypes.Structure):
+    _fields_ = [("dx", wintypes.LONG), ("dy", wintypes.LONG),
+                ("mouseData", wintypes.DWORD), ("dwFlags", wintypes.DWORD),
+                ("time", wintypes.DWORD), ("dwExtraInfo", _ULONG_PTR)]
+
+
+class _KEYBDINPUT(ctypes.Structure):
+    _fields_ = [("wVk", wintypes.WORD), ("wScan", wintypes.WORD),
+                ("dwFlags", wintypes.DWORD), ("time", wintypes.DWORD),
+                ("dwExtraInfo", _ULONG_PTR)]
+
+
+class _HARDWAREINPUT(ctypes.Structure):
+    _fields_ = [("uMsg", wintypes.DWORD), ("wParamL", wintypes.WORD),
+                ("wParamH", wintypes.WORD)]
+
+
+class _INPUTUNION(ctypes.Union):
+    _fields_ = [("mi", _MOUSEINPUT), ("ki", _KEYBDINPUT), ("hi", _HARDWAREINPUT)]
+
+
+class _INPUT(ctypes.Structure):
+    # Union completa (mi/ki/hi) p/ o sizeof bater com o INPUT do Win32 (40 bytes x64);
+    # passar cbSize errado faz o SendInput recusar sem erro visivel.
+    _fields_ = [("type", wintypes.DWORD), ("u", _INPUTUNION)]
+
+
+_INPUT_KEYBOARD = 1
+_KEYEVENTF_KEYUP = 0x0002
+_KEYEVENTF_UNICODE = 0x0004
+
+
+def _inject_clipboard(text: str) -> None:
+    """Cola via clipboard + Ctrl+V e restaura o clipboard anterior. Propaga excecao se o
+    clipboard estiver indisponivel (travado por outro app) p/ a escada cair p/ SendInput."""
+    try:
+        saved = pyperclip.paste()
+    except Exception:
+        saved = ""
+    try:
+        pyperclip.copy(text)          # levanta se o clipboard estiver travado -> escala
+        time.sleep(0.05)
+        keyboard.send("ctrl+v")
+        time.sleep(0.20)              # da tempo do app processar antes de restaurar
+    finally:
+        try:
+            pyperclip.copy(saved)
+        except Exception:
+            pass
+
+
+def _inject_sendinput(text: str) -> None:
+    """Digita o texto no app em foco via SendInput com KEYEVENTF_UNICODE — um par
+    down/up por unidade UTF-16, sem depender de layout de teclado nem do clipboard."""
+    user32 = ctypes.WinDLL("user32", use_last_error=True)
+    units = text.encode("utf-16-le")
+    events = []
+    for i in range(0, len(units), 2):
+        code = units[i] | (units[i + 1] << 8)
+        for flags in (_KEYEVENTF_UNICODE, _KEYEVENTF_UNICODE | _KEYEVENTF_KEYUP):
+            ev = _INPUT(type=_INPUT_KEYBOARD)
+            ev.u.ki = _KEYBDINPUT(wVk=0, wScan=code, dwFlags=flags, time=0, dwExtraInfo=0)
+            events.append(ev)
+    if not events:
+        return
+    n = len(events)
+    arr = (_INPUT * n)(*events)
+    sent = user32.SendInput(n, ctypes.byref(arr), ctypes.sizeof(_INPUT))
+    if sent != n:
+        raise ctypes.WinError(ctypes.get_last_error())
 
 
 # ---------------------------------------------------------------------------
@@ -160,23 +245,21 @@ class Ditador:
 
     @staticmethod
     def _inject(text: str) -> None:
-        """Cola o texto no app em foco via clipboard + Ctrl+V e restaura o clipboard."""
+        """Insere o texto no app em foco. Escada de robustez (US-5.1): tenta colar via
+        clipboard+Ctrl+V (rapido, acentos perfeitos); se o clipboard falhar (ocupado/
+        indisponivel), cai para SendInput Unicode (digita os caracteres direto)."""
         if not text:
             return
         try:
-            saved = pyperclip.paste()
-        except Exception:
-            saved = ""
-        try:
-            pyperclip.copy(text)
-            time.sleep(0.05)
-            keyboard.send("ctrl+v")
-            time.sleep(0.20)  # da tempo do app processar o paste antes de restaurar
-        finally:
+            _inject_clipboard(text)
+        except Exception as e:  # clipboard travado por outro app, backend ausente, etc.
+            print(f"[ditar] clipboard indisponivel ({e}); caindo p/ SendInput",
+                  file=sys.stderr)
             try:
-                pyperclip.copy(saved)
-            except Exception:
-                pass
+                _inject_sendinput(text)
+            except Exception as e2:
+                print(f"[ditar] falha ao injetar texto (clipboard e SendInput): {e2}",
+                      file=sys.stderr)
 
     def _do_transcribe(self, audio: np.ndarray) -> None:
         try:

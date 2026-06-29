@@ -24,7 +24,8 @@ Um ícone fica na **bandeja do sistema**. Atalho padrão: **`CTRL+ALT+D`** (conf
 - **Modo Segurar** (padrão): segure `CTRL+ALT+D` enquanto fala, solte → o texto é digitado no app em foco.
 - **Modo Toggle**: aperte para começar, aperte de novo para parar.
 - Um **HUD** flutuante mostra "Ouvindo…" / "Escrevendo…"; um **som suave** marca início/fim.
-- O texto é colado via clipboard (robusto para acentuação PT) e o clipboard anterior é restaurado.
+- O texto é colado via clipboard (robusto para acentuação PT) e o clipboard anterior é restaurado;
+  se o clipboard estiver ocupado por outro app, o Ditar digita o texto direto (SendInput) — sem perder o ditado.
 
 **Configurações** (menu da bandeja → *Configurações*): microfone, som on/off, modo (segurar/toggle)
 e atalho. Mic e som valem na hora; modo e atalho aplicam em segundos, **sem reiniciar**.

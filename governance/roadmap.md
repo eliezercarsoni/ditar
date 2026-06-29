@@ -26,7 +26,8 @@ Mic selecionável, som suave, HUD flutuante, modos toggle+hold, config ao vivo, 
 - ✅ **Instalador completo publicado** (1.3.6): `Ditar-Setup-1.3.6.exe` (~1 GB) anexado à release
   v1.3.6, ao lado do delta. Política: toda release "Latest" carrega full + delta.
 - ✅ **Fonte público sincronizado** (commit `d826909`): reescrita R1–R3 + governança commitadas/pushadas na `main`.
-- US-5.3 code signing (Azure Trusted Signing) · US-5.1 fallback de injeção · US-2.3 (modelo/idioma na config) · US-3.3 (áudio+poda) · auto-mute música ao ditar.
+- ✅ **Fallback de injeção** (US-5.1): clipboard → SendInput Unicode (UIA adiado).
+- US-5.3 code signing (Azure Trusted Signing) · US-2.3 (modelo/idioma na config) · US-3.3 (áudio+poda) · auto-mute música ao ditar.
 
 ## Princípio de priorização
 A dor real do usuário fura a fila: o feedback do teste (mic + UX do ditado) virou a R2,

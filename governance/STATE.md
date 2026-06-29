@@ -33,8 +33,11 @@ alwaysApply: true
   - ✅ **Fonte público sincronizado** (2026-06-29, commit `d826909`): a reescrita R1–R3 (módulos,
     `build/` sem binários, `governance/`) + README corrigido foram commitados/pushados na `main`
     (39 arquivos, +2750). Antes o repo tinha só 2 commits — agora reflete o software lançado.
-  - ⬜ Code signing (Azure Trusted Signing) · ⬜ escada de fallback de injeção · ⬜ US-2.3 (modelo/idioma) ·
-    ⬜ US-3.3 (áudio+poda) · ⬜ auto-mute música ao ditar.
+  - ✅ **Escada de fallback de injeção** (US-5.1): clipboard → SendInput Unicode; cobre o caso comum
+    "clipboard ocupado por outro app" (antes sumia). UIA (3º degrau) adiado. `ditar.py:_inject` +
+    `_inject_sendinput`. Verificado: round-trip Unicode (acentos PT) + escalonamento na exceção.
+  - ⬜ Code signing (Azure Trusted Signing) · ⬜ US-2.3 (modelo/idioma) · ⬜ US-3.3 (áudio+poda) ·
+    ⬜ auto-mute música ao ditar.
 - **Build/release:** `pyinstaller build/ditar.spec` → ISCC `installer.iss` (full) → `make_delta.py <ver> <ant>`
   → `gh release create` **+ anexar o `Ditar-Setup-<ver>.exe` à release** (senão usuário novo trava).
   Versão única em `version.py` (sincronizar `installer.iss`). Rollback: reinstalar release anterior.
@@ -63,6 +66,9 @@ alwaysApply: true
 - Modularizar `src/` em camadas (DDD) — **gatilho:** só se config + histórico crescerem (tailoring §2).
 - Code signing (Azure Trusted Signing) — **gatilho:** R4 / quando o SmartScreen virar incômodo.
 - Empacotar engine CPU-only como build alternativo — **gatilho:** demanda de usuários sem GPU NVIDIA.
+- **3º degrau da injeção (UI Automation)** — **gatilho:** caso real onde clipboard E SendInput
+  falhem (ex.: controle custom sem entrada de teclado). Não vence o UIPI de app em admin e exigiria
+  `comtypes`/`uiautomation` no bundle — por isso ficou fora da US-5.1 inicial.
 
 ## Todos soltos
 - [x] Criar o `app.ico` do produto → feito (`audio/app.ico`, gerado por `build/make_icon.py`).

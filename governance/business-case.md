@@ -144,7 +144,7 @@ Esse é o coração da proposta de valor.
 - **US-4.2** Atualização baixada/aplicada em 1 clique, com rollback — 5 pts
 
 **ÉPICO 5 — Robustez do ditado** (inspiração FluidVoice) · *baixa*
-- **US-5.1** Escada de fallback de injeção (clipboard → SendInput Unicode → UI Automation) — 5 pts
+- **US-5.1** Escada de fallback de injeção (clipboard → SendInput Unicode → UI Automation) — 5 pts — ✅ 2 degraus (clipboard → SendInput); UIA adiado (ver STATE.md)
 - **US-5.2** Modos push-to-talk além do toggle — 3 pts ✅ *(entregue na R2-exec)*
 - **US-5.3** Assinatura de código (Azure Trusted Signing) p/ matar o aviso do SmartScreen — 3 pts
 
@@ -166,7 +166,7 @@ Esse é o coração da proposta de valor.
 | **R1 — "Tem .exe"** | Instalador funcional, sem Python | É1 + US-2.1 | ✅ feito |
 | **R2 — "Ditado estilo Wispr"** | Mic + som suave + HUD + modos hold/toggle + config | É6 + US-2.3 (parcial) + US-5.2 | ✅ feito |
 | **R3 — "Parece app + se mantém"** | Histórico SQLite + onboarding + auto-update (delta) | US-2.2 + É3 + É4 | ✅ feito (1.3.6) |
-| **R4 — "Polido / distribuição"** | ✅ full installer publicado (1.3.6) · ✅ fonte público sincronizado · ⬜ code signing, fallback de injeção, US-2.3/US-3.3, auto-mute | US-5.1 + US-5.3 + resto | 🟡 em andamento |
+| **R4 — "Polido / distribuição"** | ✅ full installer publicado (1.3.6) · ✅ fonte público sincronizado · ✅ fallback de injeção (US-5.1, UIA adiado) · ⬜ code signing, US-2.3/US-3.3, auto-mute | US-5.1 + US-5.3 + resto | 🟡 em andamento |
 
 Ordem operacional e horizontes em [`roadmap.md`](roadmap.md).
 
