@@ -7,7 +7,7 @@
 ; (consome a pasta onedir em build\dist\Ditar — rode o PyInstaller antes.)
 
 #define MyAppName "Ditar"
-#define MyAppVersion "1.3.6"
+#define MyAppVersion "1.3.7"
 #define MyAppPublisher "Eliezer Carsoni"
 #define MyAppExeName "Ditar.exe"
 

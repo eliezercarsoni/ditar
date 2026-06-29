@@ -10,11 +10,11 @@ alwaysApply: true
 > leia ao retomar. Decisão estrutural vai para **ADR** (durável); estado do trabalho
 > fica **aqui**.
 
-**Última atualização:** 2026-06-29 por Eliezer (via Claude Code) — R4: instalador completo publicado + fonte público sincronizado
+**Última atualização:** 2026-06-29 por Eliezer (via Claude Code) — R4: release 1.3.7 (injeção robusta + modelo/idioma)
 
 ## Em andamento / próximo passo
 > **Resumo:** o `audio/` virou um **software Windows instalável** (era um par de scripts Python).
-> **R1, R2 e R3 entregues**; versão atual **1.3.6**. Releases públicas em `github.com/eliezercarsoni/ditar`.
+> **R1, R2 e R3 entregues**; **R4 em andamento**; versão atual **1.3.7**. Releases públicas em `github.com/eliezercarsoni/ditar`.
 
 - **R1 "Tem .exe" ✅** — PyInstaller onedir (CUDA no bundle ~2,1 GB) + instalador Inno per-user
   (sem UAC), ícone, autostart. Instalador ~1 GB. Ver [ADR-0002](adr/0002-empacotamento-pyinstaller-inno-winsparkle.md).
@@ -33,12 +33,12 @@ alwaysApply: true
   - ✅ **Fonte público sincronizado** (2026-06-29, commit `d826909`): a reescrita R1–R3 (módulos,
     `build/` sem binários, `governance/`) + README corrigido foram commitados/pushados na `main`
     (39 arquivos, +2750). Antes o repo tinha só 2 commits — agora reflete o software lançado.
-  - ✅ **Escada de fallback de injeção** (US-5.1): clipboard → SendInput Unicode; cobre o caso comum
-    "clipboard ocupado por outro app" (antes sumia). UIA (3º degrau) adiado. `ditar.py:_inject` +
-    `_inject_sendinput`. Verificado: round-trip Unicode (acentos PT) + escalonamento na exceção.
-  - ✅ **US-2.3 modelo/idioma na config**: dropdowns na janela de Configurações; idioma aplica ao
-    vivo (re-lido por gravação), modelo exige reiniciar. `config.py` (model/language) + `settings.py`
-    + resolução no `ditar.py:main` (arg CLI sobrepõe; `firstrun.ensure_model` baixa o escolhido).
+  - ✅ **Escada de fallback de injeção** (US-5.1, **lançado na 1.3.7**): clipboard → SendInput Unicode;
+    cobre o caso comum "clipboard ocupado por outro app" (antes sumia). UIA (3º degrau) adiado.
+    `ditar.py:_inject` + `_inject_sendinput`. Verificado: round-trip Unicode (acentos PT) + escalonamento.
+  - ✅ **US-2.3 modelo/idioma na config** (**lançado na 1.3.7**): dropdowns na janela de Configurações;
+    idioma aplica ao vivo (re-lido por gravação), modelo exige reiniciar. `config.py` (model/language)
+    + `settings.py` + resolução no `ditar.py:main` (arg CLI sobrepõe; `firstrun.ensure_model` baixa).
   - ⬜ Code signing (Azure Trusted Signing) · ⬜ US-3.3 (áudio+poda) · ⬜ auto-mute música ao ditar.
 - **Build/release:** `pyinstaller build/ditar.spec` → ISCC `installer.iss` (full) → `make_delta.py <ver> <ant>`
   → `gh release create` **+ anexar o `Ditar-Setup-<ver>.exe` à release** (senão usuário novo trava).
