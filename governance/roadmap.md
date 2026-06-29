@@ -25,8 +25,7 @@ Mic selecionável, som suave, HUD flutuante, modos toggle+hold, config ao vivo, 
 ## 🟢 Now — R4 "Polido / distribuição"
 - ✅ **Instalador completo publicado** (1.3.6): `Ditar-Setup-1.3.6.exe` (~1 GB) anexado à release
   v1.3.6, ao lado do delta. Política: toda release "Latest" carrega full + delta.
-- **Sincronizar o fonte público** com o software lançado: o repo `eliezercarsoni/ditar` tem só
-  2 commits; a reescrita R1–R3 (módulos, `build/`, `governance/`) está fora do GitHub.
+- ✅ **Fonte público sincronizado** (commit `d826909`): reescrita R1–R3 + governança commitadas/pushadas na `main`.
 - US-5.3 code signing (Azure Trusted Signing) · US-5.1 fallback de injeção · US-2.3 (modelo/idioma na config) · US-3.3 (áudio+poda) · auto-mute música ao ditar.
 
 ## Princípio de priorização

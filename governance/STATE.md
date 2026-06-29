@@ -10,7 +10,7 @@ alwaysApply: true
 > leia ao retomar. Decisão estrutural vai para **ADR** (durável); estado do trabalho
 > fica **aqui**.
 
-**Última atualização:** 2026-06-29 por Eliezer (via Claude Code) — R4 iniciada: instalador completo publicado
+**Última atualização:** 2026-06-29 por Eliezer (via Claude Code) — R4: instalador completo publicado + fonte público sincronizado
 
 ## Em andamento / próximo passo
 > **Resumo:** o `audio/` virou um **software Windows instalável** (era um par de scripts Python).
@@ -30,9 +30,9 @@ alwaysApply: true
     release v1.3.6, ao lado do delta. Lacuna fechada — usuário novo instala do zero; quem já tem
     usa o delta. **Política:** toda release que vira "Latest" carrega o full + o delta (o
     `updater.py` lê `releases/latest` e já expõe `installer_url` — sem mudança de código).
-  - ⬜ **Sincronizar o fonte público** com o software lançado — o repo `eliezercarsoni/ditar` tem só
-    2 commits; toda a reescrita R1–R3 está não-commitada/não-pushada (releases saíram de artefatos
-    locais). README local já corrigido, em fila p/ esse push. É item próprio da R4.
+  - ✅ **Fonte público sincronizado** (2026-06-29, commit `d826909`): a reescrita R1–R3 (módulos,
+    `build/` sem binários, `governance/`) + README corrigido foram commitados/pushados na `main`
+    (39 arquivos, +2750). Antes o repo tinha só 2 commits — agora reflete o software lançado.
   - ⬜ Code signing (Azure Trusted Signing) · ⬜ escada de fallback de injeção · ⬜ US-2.3 (modelo/idioma) ·
     ⬜ US-3.3 (áudio+poda) · ⬜ auto-mute música ao ditar.
 - **Build/release:** `pyinstaller build/ditar.spec` → ISCC `installer.iss` (full) → `make_delta.py <ver> <ant>`
